@@ -25,7 +25,7 @@ class Sidebar extends HTMLElement {
                     </ul>
                 </div>
                 <div id="logout">
-                    <button id="logout_uni" onclick="window.location.href='logout.html'">
+                    <button id="logout_uni">
                         <i class="fa-solid fa-right-from-bracket"></i>
                         <span class="item-descricao">Sair</span>
                     </button>
@@ -44,6 +44,12 @@ class Sidebar extends HTMLElement {
     });
 
     this.setActiveMenuItem();
+
+    const logoutButton = this.querySelector('#logout_uni');
+
+    logoutButton.addEventListener('click', () => {
+      this.logout();
+    });
   }
 
   setActiveMenuItem() {
@@ -55,6 +61,11 @@ class Sidebar extends HTMLElement {
         item.classList.add('active');
       }
     });
+  }
+
+  logout() {
+    localStorage.removeItem('authToken');
+    window.location.href = '/dashboard/index.html';
   }
 }
 

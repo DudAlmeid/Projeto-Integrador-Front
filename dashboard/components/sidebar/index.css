@@ -1,6 +1,6 @@
 #sidebar {
     width: 60px;
-    background-color: #f5f7fa;
+    background-color: var(--color-background);
     transition: width 0.3s;
     height: 100%;
     display: flex;
@@ -33,17 +33,16 @@
     text-decoration: none;
     gap: 12px;
     border-radius: 8px;
-    transition: background-color 0.2s ease-in-out;
 }
 
 /* Hover effect */
 .side-iten a:hover {
-    background-color: #e0e0e0;
+    background-color: var(--color-background-dark);
 }
 
 /* Active state */
 .side-iten.active a {
-    background-color: #d0d0d0;
+    background-color: var(--color-background-dark);
     font-weight: bold;
 }
 
@@ -81,7 +80,6 @@
     color: black;
     padding: 10px 10px;
     border-radius: 8px;
-    transition: background-color 0.2s ease-in-out;
     width: 90%;
     font-size: 1rem;
     font-weight: 400;
@@ -90,5 +88,5 @@
 
 /* Logout hover */
 #logout_uni:hover {
-    background-color: #e0e0e0;
+    background-color: var(--color-background-dark);
 }

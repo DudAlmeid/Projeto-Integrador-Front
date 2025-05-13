@@ -11,10 +11,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const currentSection = document.querySelector('section').id;
 
   const titleMap = {
-    'tela-chamados': 'Chamadas',
-    'tela-dashboard': 'Dashboard',
-    'tela-clientes': 'Clientes',
-    'tela-produtos': 'Produtos',
+    chamados: 'Chamados',
+    histórico: 'Histórico',
+    clientes: 'Clientes',
   };
 
   const pageTitle = titleMap[currentSection] || 'Página';
