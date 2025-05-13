@@ -8,6 +8,7 @@
     justify-content: space-between;
     overflow: hidden;
     position: fixed;
+    padding-block: 20px;
 }
 
 #sidebar.open-sidebar {
@@ -51,6 +52,9 @@
     opacity: 0;
     white-space: nowrap;
     transition: opacity 0.2s ease-in-out;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-text);
 }
 
 #sidebar.open-sidebar .item-descricao {
@@ -59,7 +63,8 @@
 
 /* Logout styling */
 #logout {
-    padding: 16px;
+    padding-inline: 16px;
+    padding-bottom: 40px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -78,6 +83,9 @@
     border-radius: 8px;
     transition: background-color 0.2s ease-in-out;
     width: 90%;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-text);
 }
 
 /* Logout hover */
