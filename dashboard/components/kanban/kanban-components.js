@@ -15,7 +15,7 @@ class KanbanColumn extends HTMLElement {
                     background-color: var(--color-background);
                     border-radius: 8px;
                     padding: 15px;
-                    height: 100%;
+                    height: calc(100% - 40px);
                     overflow: hidden;
                 }
                 
