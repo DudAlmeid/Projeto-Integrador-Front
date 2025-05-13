@@ -5,19 +5,19 @@ class Sidebar extends HTMLElement {
                 <div id="sidebar_content">
                     <ul id="side_itens">
                         <li class="side-iten">
-                            <a href="/Dashboard/pages/chamados/index.html">
+                            <a href="/dashboard/pages/chamados/index.html">
                                 <i class="fa-solid fa-chart-bar"></i>
                                 <span class="item-descricao">Chamados</span>
                             </a>
                         </li>
                         <li class="side-iten">
-                            <a href="/Dashboard/pages/cliente/index.html">
+                            <a href="/dashboard/pages/clientes/index.html">
                                 <i class="fa-solid fa-user"></i>
                                 <span class="item-descricao">Clientes</span>
                             </a>
                         </li>
                         <li class="side-iten">
-                            <a href="/Dashboard/pages/historico/index.html">
+                            <a href="/dashboard/pages/historico/index.html">
                                 <i class="fa-solid fa-clock"></i>
                                 <span class="item-descricao">Histórico</span>
                             </a>
