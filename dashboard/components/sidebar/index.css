@@ -1,0 +1,86 @@
+#sidebar {
+    width: 60px;
+    background-color: #f5f7fa;
+    transition: width 0.3s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    position: fixed;
+}
+
+#sidebar.open-sidebar {
+    width: 200px;
+}
+
+#side_itens {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    cursor: pointer;
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+}
+
+.side-iten a {
+    display: flex;
+    align-items: center;
+    padding: 10px 10px;
+    color: black;
+    text-decoration: none;
+    gap: 12px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Hover effect */
+.side-iten a:hover {
+    background-color: #e0e0e0;
+}
+
+/* Active state */
+.side-iten.active a {
+    background-color: #d0d0d0;
+    font-weight: bold;
+}
+
+/* Icon + text */
+.item-descricao {
+    opacity: 0;
+    white-space: nowrap;
+    transition: opacity 0.2s ease-in-out;
+}
+
+#sidebar.open-sidebar .item-descricao {
+    opacity: 1;
+}
+
+/* Logout styling */
+#logout {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+#logout_uni {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: black;
+    padding: 10px 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease-in-out;
+    width: 90%;
+}
+
+/* Logout hover */
+#logout_uni:hover {
+    background-color: #e0e0e0;
+}

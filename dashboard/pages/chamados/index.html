@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/dashboard/assets/css/index.css" />
+    <link rel="stylesheet" href="/dashboard/assets/css/theme.css" />
+    <link rel="stylesheet" href="/dashboard/components/sidebar/index.css" />
+    <link rel="stylesheet" href="/dashboard/components/header/index.css" />
+    <link rel="stylesheet" href="/dashboard/global/index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <title>Projeto integrador</title>
+  </head>
+  <body>
+    <sidebar-component></sidebar-component>
+
+    <section id="chamados" class="content">
+      <header-component></header-component>
+
+      <div class="container">
+        <h1>Chamados</h1>
+        <div class="card">
+          <div class="card-header">
+            <h2>Lista de Chamados</h2>
+            <button class="btn btn-primary">Novo Chamado</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Os dados dos chamados serão inseridos aqui dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer-component></footer-component>
+    </section>
+  </body>
+
+  <script src="/dashboard/components/sidebar/index.js"></script>
+  <script src="/dashboard/components/header/index.js"></script>
+  <script src="/global/index.js"></script>
+</html>
