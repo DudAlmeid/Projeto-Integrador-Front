@@ -16,7 +16,6 @@ class KanbanColumn extends HTMLElement {
                     border-radius: 8px;
                     padding: 15px;
                     height: calc(100% - 40px);
-                    overflow: hidden;
                 }
                 
                 .column-header {
@@ -34,9 +33,26 @@ class KanbanColumn extends HTMLElement {
                     display: flex;
                     flex-direction: column;
                     gap: 15px;
+
+                    scrollbar-width: thin;
+                    scrollbar-color: #bbb transparent;
                 }
-                
+
+                .column-cards::-webkit-scrollbar {
+                    width: 8px;
+                }
+
+                .column-cards::-webkit-scrollbar-thumb {
+                    background-color: #bbb;
+                    border-radius: 4px;
+                }
+
+                .column-cards::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+
                 ::slotted(task-card) {
+                    margin-right: 10px;
                     margin-bottom: 5px;
                 }
             </style>
