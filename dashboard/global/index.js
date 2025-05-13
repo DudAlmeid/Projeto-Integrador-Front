@@ -1,4 +1,3 @@
-// Function to update the page title of the header component
 function updatePageTitle(title) {
   const headerComponent = document.querySelector('header-component');
   if (headerComponent) {
@@ -7,7 +6,8 @@ function updatePageTitle(title) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+// Inicializar aplicação quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', () => {
   const currentSection = document.querySelector('section').id;
 
   const titleMap = {
