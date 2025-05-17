@@ -197,7 +197,7 @@
   background-color: var(--color-white);
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-lg);
-  width: 500px;
+  width: 800px;
   max-width: 90%;
   max-height: 90vh;
   overflow-y: auto;
@@ -238,8 +238,13 @@
   color: var(--color-text);
 }
 
-.modal-body {
+#clientForm {
+  display: flex;
+  flex-direction: column;
   padding: 24px;
+  width: 100%;
+  max-width: 740px;
+  gap: 16px;
 }
 
 .modal-footer {
@@ -284,7 +289,8 @@
 
 /* Form Styles */
 .form-group {
-  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group label {
@@ -298,7 +304,6 @@
 .form-group input,
 .form-group select,
 .form-group textarea {
-  width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-sm);

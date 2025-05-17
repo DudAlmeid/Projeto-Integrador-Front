@@ -6,7 +6,6 @@ function updatePageTitle(title) {
   }
 }
 
-// Inicializar aplicação quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
   const currentSection = document.querySelector('section').id;
 
@@ -19,3 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const pageTitle = titleMap[currentSection] || 'Página';
   updatePageTitle(pageTitle);
 });
+
+// Create pagination
+const pagination = document.createElement('pagination-component');
+pagination.setAttribute('current-page', '1');
+pagination.setAttribute('total-pages', '15');
+document.body.appendChild(pagination);
+
+pagination.addEventListener('page-change', (e) => {
+  console.log('Page changed to:', e.detail.currentPage);
+});
+
+pagination.onPageChange = (page) => {
+  console.log('Page changed to:', page);
+};

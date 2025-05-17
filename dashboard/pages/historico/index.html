@@ -7,8 +7,14 @@
     <link rel="stylesheet" href="/dashboard/global/theme.css" />
     <link rel="stylesheet" href="/dashboard/components/sidebar/index.css" />
     <link rel="stylesheet" href="/dashboard/components/header/index.css" />
+    <link
+      rel="stylesheet"
+      href="/dashboard/components/historic-table/index.css"
+    />
+    <link rel="stylesheet" href="/dashboard/components/pagination/index.css" />
     <link rel="stylesheet" href="/dashboard/global/index.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
@@ -30,7 +36,9 @@
     <section id="histórico" class="content">
       <header-component page-title="Histórico"></header-component>
 
-      <div class="container"></div>
+      <div class="container">
+        <historic-table-component chamado-id="123"></historic-table-component>
+      </div>
 
       <footer-component></footer-component>
     </section>
@@ -39,4 +47,6 @@
   <script src="/dashboard/components/sidebar/index.js"></script>
   <script src="/dashboard/components/header/index.js"></script>
   <script src="/dashboard/global/index.js"></script>
+  <script src="/dashboard/components/historic-table/index.js"></script>
+  <script src="/dashboard/components/pagination/index.js"></script>
 </html>
