@@ -2,9 +2,10 @@ class KanbanColumn extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this.chamados = [];
   }
 
-  connectedCallback() {
+  async connectedCallback() {
     const title = this.getAttribute('title') || 'Nova Coluna';
     const status = this.getAttribute('status') || 'default';
 
@@ -69,6 +70,8 @@ class KanbanColumn extends HTMLElement {
     // Configura evento de drop para arrastar e soltr cards
     this.addEventListener('dragover', this.handleDragOver);
     this.addEventListener('drop', this.handleDrop);
+
+    await this.loadChamados();
   }
 
   // Eventos para suporte a arrastar e soltar
@@ -100,6 +103,69 @@ class KanbanColumn extends HTMLElement {
       this.dispatchEvent(event);
     }
   }
+
+  showLoading() {
+    console.log('Loading...');
+  }
+
+  hideLoading() {
+    console.log('Loading complete.');
+  }
+  showError() {
+    const container = this.shadowRoot.getElementById('cards-container');
+    container.innerHTML = `
+            <div class="error-message">
+                <p>Erro ao carregar os chamados. Tente novamente mais tarde.</p>
+            </div>
+        `;
+    container.style.textAlign = 'center';
+    container.style.color = 'red';
+    container.style.fontSize = '16px';
+  }
+
+  async loadChamados() {
+    this.showLoading();
+    try {
+      const status = this.getAttribute('status');
+      const response = await fetch(
+        `http://localhost:3000/api/chamados?status=${status}`
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch chamados');
+      }
+
+      console.log('Chamados fetched successfully:', response);
+
+      this.chamados = await response.json();
+      this.renderChamados();
+    } catch (error) {
+      console.error('Error loading chamados:', error);
+      this.showError();
+    } finally {
+      this.hideLoading();
+    }
+  }
+
+  renderChamados() {
+    const container = this.shadowRoot.querySelector('.column-cards');
+
+    this.chamados.forEach((chamado) => {
+      const card = document.createElement('task-card');
+      card.setAttribute('id', chamado.id);
+      card.setAttribute('title', chamado.titulo);
+      card.setAttribute('description', chamado.descricao);
+      card.setAttribute('priority', chamado.prioridade || 'medium');
+      card.setAttribute('assignee', chamado.usuario_nome || '');
+      card.setAttribute('status', chamado.status);
+
+      // Add custom data attributes if needed
+      card.dataset.chamadoId = chamado.id;
+      card.dataset.clienteId = chamado.cliente_id;
+
+      container.appendChild(card);
+    });
+  }
 }
 
 // Definição do custom element para card de tarefa
@@ -111,6 +177,52 @@ class TaskCard extends HTMLElement {
 
   static get observedAttributes() {
     return ['title', 'description', 'priority', 'assignee', 'status'];
+  }
+
+  async handleDrop(e) {
+    e.preventDefault();
+    const cardId = e.dataTransfer.getData('text/plain');
+    const card = document.getElementById(cardId);
+
+    if (card) {
+      this.appendChild(card);
+      const newStatus = this.dataset.status;
+
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/chamados/${cardId}/status`,
+          {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: newStatus }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to update chamado status');
+        }
+
+        card.setAttribute('status', newStatus);
+
+        const event = new CustomEvent('card-status-changed', {
+          detail: {
+            cardId: cardId,
+            newStatus: newStatus,
+          },
+          bubbles: true,
+        });
+        this.dispatchEvent(event);
+      } catch (error) {
+        console.error('Error updating chamado status:', error);
+        // Revert UI change if API call fails
+        const originalColumn = document.querySelector(
+          `kanban-column[status="${card.getAttribute('status')}"]`
+        );
+        originalColumn?.appendChild(card);
+      }
+    }
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -128,6 +240,8 @@ class TaskCard extends HTMLElement {
     // Torna o card arrastável
     this.setAttribute('draggable', 'true');
     this.addEventListener('dragstart', this.handleDragStart);
+    this.addEventListener('dragover', this.handleDragOver);
+    this.addEventListener('drop', this.handleDrop);
     this.addEventListener('click', this.handleClick);
 
     this.render();
@@ -138,9 +252,15 @@ class TaskCard extends HTMLElement {
     e.dataTransfer.effectAllowed = 'move';
   }
 
+  handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  }
+
   handleClick() {
-    // Dispara evento para editar o card
     const event = new CustomEvent('edit-card', {
+      bubbles: true,
+      composed: true,
       detail: {
         cardId: this.id,
         title: this.getAttribute('title'),
@@ -149,8 +269,8 @@ class TaskCard extends HTMLElement {
         assignee: this.getAttribute('assignee'),
         status: this.getAttribute('status'),
       },
-      bubbles: true,
     });
+
     this.dispatchEvent(event);
   }
 
