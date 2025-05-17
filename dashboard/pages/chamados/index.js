@@ -33,19 +33,16 @@ class KanbanApp {
   }
 
   setupEventListeners() {
-    // Modal and form
     this.addCardBtn.addEventListener('click', () => this.openModal());
     this.closeBtn.addEventListener('click', () => this.closeModal());
     this.cardForm.addEventListener('submit', (e) => this.handleFormSubmit(e));
 
-    // Close modal when clicking outside
     window.addEventListener('click', (e) => {
       if (e.target === this.modal) {
         this.closeModal();
       }
     });
 
-    // Card events
     document.addEventListener('edit-card', (e) =>
       this.handleEditCard(e.detail)
     );
@@ -53,7 +50,6 @@ class KanbanApp {
       this.handleStatusChange(e.detail)
     );
 
-    // Search functionality
     this.searchBtn.addEventListener('click', () => this.handleSearch());
     this.searchInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') this.handleSearch();
@@ -75,7 +71,13 @@ class KanbanApp {
           ? 'http://localhost:3000/api/chamados'
           : `http://localhost:3000/api/chamados?status=${status}`;
 
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -132,6 +134,10 @@ class KanbanApp {
     card.setAttribute('priority', cardData.prioridade || 'medium');
     card.setAttribute('assignee', cardData.usuario_nome || '');
     card.setAttribute('status', cardData.status);
+    card.setAttribute('created-at', cardData.created_at);
+    card.setAttribute('deadline', cardData.prazo || '');
+    card.setAttribute('client', cardData.cliente_nome || '');
+    card.setAttribute('client-id', cardData.cliente_id || '');
 
     // Add additional data attributes
     card.dataset.createdAt = cardData.created_at;
@@ -148,7 +154,14 @@ class KanbanApp {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/chamados/search?q=${encodeURIComponent(searchTerm)}`
+        `http://localhost:3000/api/chamados/search?q=${encodeURIComponent(searchTerm)}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+          },
+        }
       );
 
       if (!response.ok) {
@@ -173,13 +186,14 @@ class KanbanApp {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
         body: JSON.stringify({
           titulo: cardData.title,
           descricao: cardData.description,
           prioridade: cardData.priority,
           status: cardData.status,
-          usuario_id: 1, // TODO: replace to dynamic user ID after auth were implemented
+          usuario_id: localStorage.getItem('userId'), // TODO: replace to dynamic user ID after auth were implemented
         }),
       });
 
@@ -199,31 +213,33 @@ class KanbanApp {
 
   async updateCard(id, cardData) {
     this.showLoading();
-    console.log('Updating card with ID:', id);
 
     try {
+      const requestData = {
+        titulo: cardData.title ?? null,
+        descricao: cardData.description ?? null,
+        prioridade: cardData.priority ?? 'medium',
+      };
+
       const response = await fetch(`http://localhost:3000/api/chamados/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
-        body: JSON.stringify({
-          titulo: cardData.title,
-          descricao: cardData.description,
-          prioridade: cardData.priority,
-          usuario_id: 1, // TODO: replace to dynamic user ID after auth were implemented
-        }),
+        body: JSON.stringify(requestData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update card');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update card');
       }
 
-      const updatedCard = await response.json();
-      this.updateCardElement(updatedCard);
+      this.loadData(this.currentStatusFilter);
+      this.showSuccess('Chamado atualizado com sucesso!');
     } catch (error) {
       console.error('Error updating card:', error);
-      this.showError('Falha ao atualizar chamado.');
+      this.showError(error.message || 'Falha ao atualizar chamado.');
     } finally {
       this.hideLoading();
     }
@@ -237,6 +253,7 @@ class KanbanApp {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
           },
           body: JSON.stringify({ status: newStatus }),
         }
@@ -273,9 +290,8 @@ class KanbanApp {
     }, 3000);
   }
 
-  openModal(cardData = null) {
+  async openModal(cardData = null) {
     // Resetar ou preencher o formulário
-    console.log('Opening modal with card data:', cardData);
 
     this.cardForm.reset();
 
@@ -285,7 +301,24 @@ class KanbanApp {
       this.cardTitleInput.value = cardData.title || '';
       this.cardDescriptionInput.value = cardData.description || '';
       this.cardPriorityInput.value = cardData.priority || 'medium';
-      this.cardAssigneeInput.value = cardData.assignee || '';
+
+      // Preenche o campo de cliente
+      const clientSelect = document.getElementById('cardClient');
+      clientSelect.innerHTML = '';
+      const clientOption = document.createElement('option');
+      clientOption.value = cardData.clientId;
+      clientOption.textContent = cardData.client;
+      clientSelect.appendChild(clientOption);
+
+      clientSelect.disabled = true;
+
+      // Preenche o campo de responsável
+      const userSelect = document.getElementById('cardAssignee');
+      userSelect.innerHTML = '';
+      const userOption = document.createElement('option');
+      userOption.value = cardData.assigneeId;
+      userOption.textContent = cardData.assignee;
+      userSelect.appendChild(userOption);
 
       // Atualiza o título do modal
       document.querySelector('.modal-content h2').textContent =
@@ -294,6 +327,42 @@ class KanbanApp {
       this.editingCardId = null;
       // Atualiza o título do modal
       document.querySelector('.modal-content h2').textContent = 'Novo Chamado';
+      const clients = await fetch('http://localhost:3000/api/clientes', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+      });
+      const clientsData = await clients.json();
+      const clientSelect = document.getElementById('cardClient');
+      clientSelect.innerHTML = '';
+      clientsData.forEach((client) => {
+        const option = document.createElement('option');
+        option.value = client.id;
+        option.textContent = client.nome;
+        clientSelect.appendChild(option);
+      });
+
+      this.cardAssigneeInput.value = '';
+      this.cardAssigneeInput.innerHTML = '';
+      const users = await fetch('http://localhost:3000/api/usuarios', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+      });
+
+      const usersData = await users.json();
+      const userSelect = document.getElementById('cardAssignee');
+      userSelect.innerHTML = '';
+      usersData.forEach((user) => {
+        const option = document.createElement('option');
+        option.value = user.id;
+        option.textContent = user.nome;
+        userSelect.appendChild(option);
+      });
     }
 
     this.modal.style.display = 'block';
@@ -336,7 +405,6 @@ class KanbanApp {
   }
 
   handleEditCard(cardData) {
-    console.log('Edit card event received:', cardData);
     this.openModal(cardData);
   }
 }

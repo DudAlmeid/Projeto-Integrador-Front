@@ -102,8 +102,17 @@ kanban-column {
   cursor: pointer;
 }
 
+#cardForm {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-block: 1rem;
+}
+
 .form-group {
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group label {
@@ -115,7 +124,6 @@ kanban-column {
 .form-group input,
 .form-group textarea,
 .form-group select {
-  width: 100%;
   padding: 10px;
   border: 1px solid var(--border-color);
   border-radius: 4px;

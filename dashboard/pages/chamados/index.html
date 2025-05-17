@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/dashboard/components/sidebar/index.css" />
     <link rel="stylesheet" href="/dashboard/components/header/index.css" />
+    <link rel="stylesheet" href="/dashboard/pages/chamados/index.css" />
     <link rel="stylesheet" href="/dashboard/global/index.css" />
     <link rel="stylesheet" href="/dashboard/global/theme.css" />
     <link rel="stylesheet" href="/dashboard/components/kanban/kanban.css" />
@@ -85,7 +86,23 @@
             </div>
             <div class="form-group">
               <label for="cardAssignee">Responsável</label>
-              <input type="text" id="cardAssignee" />
+              <select id="cardAssignee"></select>
+            </div>
+            <div class="form-group">
+              <label for="cardDueDate">Data de Vencimento</label>
+              <input type="date" id="cardDueDate" />
+            </div>
+            <div class="form-group">
+              <label for="cardStatus">Status</label>
+              <select id="cardStatus">
+                <option value="open">Em aberto</option>
+                <option value="progress">Em atendimento</option>
+                <option value="done">Concluído</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="cardClient">Cliente</label>
+              <select id="cardClient"></select>
             </div>
             <button type="submit" class="submit-btn">Salvar</button>
           </form>
@@ -95,12 +112,15 @@
       <footer-component></footer-component>
     </section>
 
-    <script src="/dashboard/components/sidebar/index.js"></script>
-    <script src="/dashboard/components/header/index.js"></script>
-    <script src="/dashboard/global/index.js"></script>
+    <script type="module" src="/dashboard/components/sidebar/index.js"></script>
+    <script type="module" src="/dashboard/components/header/index.js"></script>
+    <script type="module" src="/dashboard/global/index.js"></script>
 
     <!-- Scripts do kanban -->
-    <script src="/dashboard/components/kanban/kanban-components.js"></script>
-    <script src="/dashboard/pages/chamados/index.js"></script>
+    <script
+      type="module"
+      src="/dashboard/components/kanban/kanban-components.js"
+    ></script>
+    <script type="module" src="/dashboard/pages/chamados/index.js"></script>
   </body>
 </html>

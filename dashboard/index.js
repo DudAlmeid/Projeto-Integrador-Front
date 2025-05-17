@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const loginMessage = document.getElementById('loginMessage');
 
   // Endpoint que receberá os dados de login (substitua pelo endpoint real posteriormente)
-  const apiUrl = 'https://api.exemplo.com/login';
+  const apiUrl = 'http://localhost:3000/api/auth/login';
 
   loginForm.addEventListener('submit', async function (event) {
     event.preventDefault();
@@ -41,10 +41,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (data.token) {
           localStorage.setItem('authToken', data.token);
+          localStorage.setItem('userId', data.user.id);
         }
 
         setTimeout(() => {
-          window.location.href = '/pages/chamados/index.html';
+          window.location.href = '/dashboard/pages/chamados/index.html';
         }, 1000);
       } else {
         showMessage(
