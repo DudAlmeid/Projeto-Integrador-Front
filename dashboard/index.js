@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.token) {
           localStorage.setItem('authToken', data.token);
           localStorage.setItem('userId', data.user.id);
+          localStorage.setItem('userName', data.user.nome);
+          localStorage.setItem('userRole', data.user.perfil);
         }
 
         setTimeout(() => {

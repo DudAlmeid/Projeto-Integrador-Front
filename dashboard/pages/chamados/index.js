@@ -16,8 +16,12 @@ class KanbanApp {
     // Form fields
     this.cardTitleInput = document.getElementById('cardTitle');
     this.cardDescriptionInput = document.getElementById('cardDescription');
+    this.cardMessageInput = document.getElementById('cardMessage');
     this.cardPriorityInput = document.getElementById('cardPriority');
     this.cardAssigneeInput = document.getElementById('cardAssignee');
+    this.cardClientInput = document.getElementById('cardClient');
+    this.cardDeadlineInput = document.getElementById('cardDeadline');
+    this.cardStatusInput = document.getElementById('cardStatus');
 
     // UI elements
     this.loadingIndicator = document.createElement('div');
@@ -126,22 +130,30 @@ class KanbanApp {
     });
   }
 
+  formatForDisplay(isoDate) {
+    if (!isoDate) return '';
+    const [year, month, day] = isoDate.split('T')[0].split('-');
+    const formattedDate = new Date(year, month - 1, day);
+    return formattedDate.toLocaleDateString('pt-BR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+  }
+
   createCardElement(cardData) {
     const card = document.createElement('task-card');
     card.id = cardData.id;
     card.setAttribute('title', cardData.titulo);
     card.setAttribute('description', cardData.descricao);
+    card.setAttribute('message', cardData.mensagem_cliente || '');
     card.setAttribute('priority', cardData.prioridade || 'medium');
     card.setAttribute('assignee', cardData.usuario_nome || '');
     card.setAttribute('status', cardData.status);
     card.setAttribute('created-at', cardData.created_at);
-    card.setAttribute('deadline', cardData.prazo || '');
+    card.setAttribute('deadline', this.formatForDisplay(cardData.prazo) || '');
     card.setAttribute('client', cardData.cliente_nome || '');
-    card.setAttribute('client-id', cardData.cliente_id || '');
-
-    // Add additional data attributes
-    card.dataset.createdAt = cardData.created_at;
-    card.dataset.deadline = cardData.prazo;
+    card.setAttribute('clientId', cardData.cliente_id || '');
 
     return card;
   }
@@ -191,9 +203,12 @@ class KanbanApp {
         body: JSON.stringify({
           titulo: cardData.title,
           descricao: cardData.description,
+          mensagem_cliente: cardData.message || '',
           prioridade: cardData.priority,
           status: cardData.status,
+          prazo: cardData.deadline || null,
           usuario_id: localStorage.getItem('userId'), // TODO: replace to dynamic user ID after auth were implemented
+          cliente_id: cardData.clientId,
         }),
       });
 
@@ -218,7 +233,10 @@ class KanbanApp {
       const requestData = {
         titulo: cardData.title ?? null,
         descricao: cardData.description ?? null,
+        mensagem_cliente: cardData.message ?? null,
         prioridade: cardData.priority ?? 'medium',
+        status: cardData.status ?? null,
+        prazo: cardData.deadline,
       };
 
       const response = await fetch(`http://localhost:3000/api/chamados/${id}`, {
@@ -292,7 +310,6 @@ class KanbanApp {
 
   async openModal(cardData = null) {
     // Resetar ou preencher o formulário
-
     this.cardForm.reset();
 
     // Se estiver editando um card existente
@@ -300,7 +317,17 @@ class KanbanApp {
       this.editingCardId = cardData.cardId;
       this.cardTitleInput.value = cardData.title || '';
       this.cardDescriptionInput.value = cardData.description || '';
+      this.cardMessageInput.value = cardData.message || '';
       this.cardPriorityInput.value = cardData.priority || 'medium';
+      this.cardStatusInput.value = cardData.status || 'backlog';
+      this.cardClientInput.value = cardData.clientId || '';
+
+      if (cardData.deadline) {
+        const [day, month, year] = cardData.deadline.split('/');
+        this.cardDeadlineInput.value = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      } else {
+        this.cardDeadlineInput.value = '';
+      }
 
       // Preenche o campo de cliente
       const clientSelect = document.getElementById('cardClient');
@@ -382,17 +409,31 @@ class KanbanApp {
     return card;
   }
 
+  formatDate(dateString) {
+    const date = new Date(dateString);
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    };
+
+    return date.toLocaleDateString('pt-BR', options).replace(/\//g, '-');
+  }
+
   handleFormSubmit(e) {
     e.preventDefault();
 
     const cardData = {
       title: this.cardTitleInput.value,
       description: this.cardDescriptionInput.value,
+      message: this.cardMessageInput.value,
       priority: this.cardPriorityInput.value,
       assignee: this.cardAssigneeInput.value,
-      status: this.editingCardId
-        ? this.getCardById(this.editingCardId)?.getAttribute('status')
-        : 'open',
+      clientId: this.cardClientInput.value,
+      deadline: this.cardDeadlineInput.value,
+      status: this.cardStatusInput.value,
     };
 
     if (this.editingCardId) {

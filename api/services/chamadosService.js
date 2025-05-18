@@ -43,6 +43,9 @@ class ChamadoService {
         descricao: chamadoData.descricao ?? oldChamado.descricao,
         prioridade: chamadoData.prioridade ?? oldChamado.prioridade,
         usuario_id: usuarioId,
+        status: chamadoData.status ?? oldChamado.status,
+        prazo: chamadoData.prazo ?? oldChamado.prazo,
+        updated_at: new Date(),
       };
 
       await Chamado.update(id, updateData, oldChamado);

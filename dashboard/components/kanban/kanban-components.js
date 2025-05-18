@@ -211,7 +211,14 @@ class TaskCard extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['title', 'description', 'priority', 'assignee', 'status'];
+    return [
+      'title',
+      'description',
+      'message',
+      'priority',
+      'assignee',
+      'status',
+    ];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -267,10 +274,14 @@ class TaskCard extends HTMLElement {
         cardId: this.id,
         title: this.getAttribute('title'),
         description: this.getAttribute('description'),
+        message: this.getAttribute('message'),
         priority: this.getAttribute('priority'),
         assignee: this.getAttribute('assignee'),
         status: this.getAttribute('status'),
+        createdAt: this.getAttribute('createdAt'),
+        deadline: this.getAttribute('deadline'),
         client: this.getAttribute('client'),
+        clientId: this.getAttribute('clientId'),
       },
     });
     this.dispatchEvent(event);

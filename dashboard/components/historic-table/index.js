@@ -84,8 +84,6 @@ class HistoricTableComponent extends HTMLElement {
   }
 
   renderTableBody() {
-    console.log('Rendering table body with data:', this.historicData);
-
     if (this.historicData.length === 0) {
       return `
         <tr>

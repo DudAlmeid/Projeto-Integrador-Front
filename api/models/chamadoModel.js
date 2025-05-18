@@ -67,6 +67,8 @@ class Chamado {
   }
 
   static async update(id, chamado) {
+    console.log("Chamado update", chamado);
+    
     const [rows] = await pool.execute(`SELECT * FROM chamados WHERE id = ?`, [
       id,
     ]);
@@ -79,8 +81,8 @@ class Chamado {
       prioridade: chamado.prioridade || chamadoAntigo.prioridade,
       usuario_id: chamado.usuario_id || chamadoAntigo.usuario_id,
       status: chamado.status || chamadoAntigo.status,
+      prazo: chamado.prazo || chamadoAntigo.prazo,
     }
-    
     
     // Atualiza o chamado
     await pool.execute(
@@ -90,6 +92,7 @@ class Chamado {
       prioridade = COALESCE(?, prioridade),
       usuario_id = COALESCE(?, usuario_id),
       status = COALESCE(?, status),
+      prazo = COALESCE(?, prazo),
       updated_at = NOW()
     WHERE id = ?`,
       [
@@ -98,6 +101,7 @@ class Chamado {
         camposParaAtualizar.prioridade,
         camposParaAtualizar.usuario_id,
         camposParaAtualizar.status,
+        camposParaAtualizar.prazo,
         id,
       ],
     );
