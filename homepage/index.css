@@ -77,6 +77,7 @@ body {
   flex-direction: column;
   padding: 20px;
   border: #b2b0b0;
+  margin-block: 20px;
 }
 .content {
   display: flex;
